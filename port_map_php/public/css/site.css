@@ -1,0 +1,36 @@
+li a {
+	display: block;
+}
+
+#data_set {
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-bottom: 10px;
+
+}
+
+.jumbotron {
+	height: 200px;
+}
+
+.map {
+	border:1px solid #428bca;
+}
+
+canvas {
+	border:1px solid #428bca;
+}
+
+.glyphicon {
+    font-size: 40px;
+}
+
+.marker {
+	display: none; 
+	position: absolute; 
+	color: blue;
+}
+
+.btn:focus {
+  outline: none;
+}

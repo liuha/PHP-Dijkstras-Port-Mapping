@@ -1,0 +1,152 @@
+<table style="margin: 0px; width: 100%;">
+  <tr>
+    <td ><h1> Data Port Map for ECERF! </h1> </td>
+    <td ><a href="node" class="top-menu"><span class="glyphicon glyphicon-plus"></span> Add Path Node</a></td>
+  </tr>
+</table>  
+<div class="container-fluid">
+  <div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+      <li><a id="3" class="router" data-toggle="pill" href="#Level3"><h2>Level 3</h2></a></li>
+      <li><a id="4" class="router" data-toggle="pill" href="#Level4"><h2>Level 4</h2></a></li>
+      <li><a id="5" class="router" data-toggle="pill" href="#Level5"><h2>Level 5</h2></a></li>
+    </ul>
+  </div>
+  <div class="tab-content col-sm-9 col-md-10">
+    <div class="row">
+        <form class="search navbar-form navbar-left" method='post' action="dataport">
+        <label>Please Input Data Port #: D-</label>
+        <input type="hidden" id="floor" name="floor" class="form-control" <?php if ( $port === null ) { ?> value="3"  <?php } else { ?> value= "<?php echo "$port->floor"; }?>">
+        <input type="number" name="port" id="port" class="form-control" placeholder="Search..." min="1" required="true" autofocus>
+        <input type="hidden" name="form_name" value="dp_Search">
+        <input class="btn btn-primary" type='submit' name="submit" value="Search selected level">
+      </form>
+      <form id="room_search" class="search navbar-form navbar-left" method='post'>
+        <label>Please Input Room #:</label>
+        <input type="text" name="search_room" id="search_room" class="form-control" placeholder="Search... eg: w3-010" required="true">
+        <input type="hidden" name="form_name" value="room_Search">
+        <input class="btn btn-primary" type='submit' name="submit" value="Search room">
+      </form>
+    </div>
+    
+     <div id='data_set' class="col-sm-4 panel panel-primary" <?php  if ( $port === null and $error === null ) { ?> style="display: none;" <?php } ?>>
+      <div class="panel-body">
+        <?php  if ( $error != null)  { ?>
+          <h2 style="color: red"> <?php echo $error; ?> </h2>
+
+        <?php } if ($port != null) { ?>
+          <?php  if ( $port->port < 10 ) { ?>
+            <h2>Data Port: D-00 <?php echo  $port->port; ?></h2>
+          <?php  } elseif ($port->port < 100 ) { ?>
+            <h2>Data Port: D-0<?php echo  $port->port; ?></h2>
+          <?php  } else { ?>
+            <h2>Data Port: D-<?php echo  $port->port; ?></h2>
+          <?php } ?>
+          <h2>Level: <?php echo  $port->floor; ?></h2>
+          <h2>Room: <?php echo  ucfirst($port->room); ?></h2>
+          <h2>Section: <?php echo  ucfirst($port->section); ?></h2>
+          <ul class="context_list" style="display: none;">
+            <li id="port" class="port_data"><?php echo  $port->port; ?></li>
+            <li id="floor" class="port_data"><?php echo  $port->floor; ?></li>
+            <li id="x_coord" class="port_data"><?php echo  $port->x_coord; ?></li>
+            <li id="y_coord" class="port_data"><?php echo  $port->y_coord; ?></li>
+          </ul>
+          <div class='row' style="min-height: 60px;">
+            <div class='col-xs-3' >
+              <button type="button" id="update" class="btn btn-primary" style="width: 100px;">Update</button>
+            </div>
+            <div class='col-xs-9'>
+              <form id="update_form" class="navbar-form navbar-right" method='post' style="display: none;">
+                <input type="hidden" name="port" class="form-control" value=<?php echo  $port->port; ?>>
+                <input type="hidden" name="floor" class="form-control" value=<?php echo  $port->floor; ?>>
+                <input type="text" name="x_update" id="x_update" class="form-control" placeholder="x..." value=<?php echo  $port->x_coord; ?>>
+                <input type="text" name="y_update" id="y_update" class="form-control" placeholder="y..." value=<?php echo  $port->y_coord; ?>>
+                <input name="form_name" value="dp_Update">
+              </form>
+            </div>
+          </div>
+
+          <?php  if ($path_list != null) { ?>
+            <h4 id = "nodenum" style="display: none;"><?php echo  count($path_list);?> </h4>
+            <table id = "pathlist" border="1" style="display: none;">
+              <?php for ($index = 0 ; $index < count($path_list); $index ++) { ?>
+                <tr> 
+                  <td> <?php echo  $index + 1; ?></td>
+                  <td id="<?php echo  $index + 1; ?>x" > <?php echo  $path_list[$index]->x_coord; ?> </td>
+                  <td id="<?php echo  $index + 1; ?>y" > <?php echo  $path_list[$index]->y_coord; ?> </td>
+                </tr>
+              <?php  } ?> 
+            </table>
+          <?php } else { ?>
+              <h4 style="color: red"> No path to this Data Port, Please add edge in Admin page!</h4>  
+          <?php  } ?>
+        <?php  } ?>
+      </div>
+    </div>
+
+
+    <div id='room_port_list' class="col-md-3 panel panel-info" <?php  if ($port_list === null) { ?> style="display: none;" <?php } ?>>
+      <?php if ($port_list != null){  ?>  
+      <div class="panel-heading text-center">Data Port List</div>
+      <div class="panel-body">      
+        <h4 id = "port_num" style="display: none;"><?php echo  count($port_list); ?> </h4>
+        <?php  if (count($port_list)> 0) { ?>
+          <h4 id = "room_floor" style="display: none;"><?php echo  $port_list->current()->floor; ?> </h4>
+        <?php  } ?>
+        <table class="table table-striped " style="display: block;">
+          <thead>
+            <tr>
+            <th>#</th>
+            <th>Room</th>
+            <th>Port #</th>
+            <th>Section</th>
+            <th style="display: none;">x_coord</th>
+            <th style="display: none;">y_coord</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php  $counter = 1; foreach ($port_list as $port) : ?>           
+              <tr> 
+                <td> <?php echo  $counter; ?></td>
+                <td id="<?php echo  $counter; ?>room" > <?php echo  $port->room; ?> </td>
+
+                <?php  if ($port->port < 10) { ?>
+                  <td id="<?php echo  $counter; ?>port" > D-00<?php echo  $port->port; ?> </td>
+                <?php } elseif ($port->port < 100) { ?>
+                  <td id="<?php echo  $counter; ?>port" > D-0<?php echo  $port->port; ?> </td>
+                <?php } else { ?>
+                  <td id="<?php echo  $counter; ?>port" > D-<?php echo  $port->port; ?> </td>
+                <?php  } ?>
+
+
+                <td id="<?php echo  $counter; ?>section" > <?php echo  $port->section; ?> </td>
+                <td id="<?php echo  $counter; ?>x" style="display: none;"> <?php echo  $port->x_coord; ?> </td>
+                <td id="<?php echo  $counter; ?>y" style="display: none;"> <?php echo  $port->y_coord; ?> </td>
+              </tr>
+            <?php $counter++; endforeach ?> 
+          </tbody>
+        </table>
+      </div>  
+      <?php } ?>
+    </div>
+        
+    <div id="Level3" class="col-sm-8 tab-pane fade">
+      <canvas id="canvas3" class="map" width='677' height='1040'></canvas>
+      <div id="marker3" class="marker glyphicon glyphicon-remove-circle"></div>
+    </div>
+    <div id="Level4" class="col-sm-8 tab-pane fade">
+      <canvas id="canvas4" class="map" width='677' height='1040'></canvas>
+      <div id="marker4"class="marker glyphicon glyphicon-remove-circle"></div>
+    </div>
+    <div id="Level5" class="col-sm-8 tab-pane fade">
+       <canvas id="canvas5" class="map" width='677' height='1040'></canvas>
+      <div id="marker5"class="marker glyphicon glyphicon-remove-circle"></div>
+    </div>
+  </div>
+</div>
+
+<div class="static-images" style="display: none;">
+  <img id="image3" class="map" width='637' height='1000' src="img/ECERF3_DataPort.png" />
+  <img id="image4" class="map" src="img/ECERF4_DataPort.png" height=1000 width=637 />
+  <img id="image5" class="map" src="img/ECERF5_DataPort.png" height=1000 width=637 />
+</div>

@@ -1,0 +1,142 @@
+<table style="margin: 0px; width: 100%;">
+  <tr>
+    <td ><h1> Add Path Nodes! </h1> </td>
+    <td ><a href="dataport" class="top-menu"><span class="glyphicon glyphicon-search"></span>Search DataPort</a></td>
+  </tr>
+</table> 
+<div class="container-fluid">
+  <div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+      <li><a id="3" class="router" data-toggle="pill" href="#Level3"><h2>Level 3</h2></a></li>
+      <li><a id="4" class="router" data-toggle="pill" href="#Level4"><h2>Level 4</h2></a></li>
+      <li><a id="5" class="router" data-toggle="pill" href="#Level5"><h2>Level 5</h2></a></li>
+    </ul>
+  </div>
+  <div class="tab-content col-sm-9 col-md-10">
+   <!-- <h4>{{ path_list }} </h4> -->
+    <h3 style="color: blue"> Add a Node </h3>
+    <h4 style="color: red"><?php echo $error ?> </h4>
+    <div class="row">
+      <form class="search navbar-form navbar-left" method='post'>
+        <p style="color: red">Pleas select level, enter node name and click coordinates</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="text-align: center;">Floor</th>
+              <th style="text-align: center;">Node Name</th>
+              <th style="text-align: center;">X Coordinate</th>
+              <th style="text-align: center;">Y Coordinates</th>
+              <th style="text-align: center;"></th>
+              <th style="text-align: center;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input type="number" id="floor" name="floor" class="form-control" placeholder="floor:"  required="true" readonly>
+              </td>
+              <td>
+                <input type="text" name="node_name" id="node_name" class="form-control" placeholder="Node Name: floor + var"  required="true">
+              </td>
+              <td>
+                <input type="text" name="x_add" id="x_add" class="form-control" placeholder="x..." required="true" readonly>
+              </td>
+              <td>
+                <input type="text" name="y_add" id="y_add" class="form-control" placeholder="y..." required="true" readonly>
+              </td>
+              <td>
+                <input type="hidden" name="form_name" value="AddNode">
+              </td>
+              <td>
+                <input class="btn btn-primary" type='submit' id="Add" name="Add" value="Add Note">
+              </td>
+            </tr>
+          </tbody>
+        </table> 
+      </form> 
+    </div>
+  
+    <div id="Level3" class="col-sm-8 tab-pane fade">
+      <canvas id="canvas3" class="map" width='677' height='1040'></canvas>
+      <div id="marker3" class="marker glyphicon glyphicon-remove-circle"></div>
+    </div>
+    <div id="Level4" class="col-sm-8 tab-pane fade">
+      <canvas id="canvas4" class="map" width='677' height='1040'></canvas>
+      <div id="marker4" class="marker glyphicon glyphicon-remove-circle"></div>
+    </div>
+    <div id="Level5" class="col-sm-8 tab-pane fade">
+       <canvas id="canvas5" class="map" width='677' height='1040'></canvas>
+      <div id="marker5" class="marker glyphicon glyphicon-remove-circle"></div>
+    </div>
+  </div>
+  <p>&nbsp;</p>
+
+  <div class="tab-content col-sm-9 col-md-10">
+    <h3 style="color: blue"> Manage Edges </h3>
+    <h4 style="color: red"><?php echo $edgeerror ?> </h4>
+    <p style="color: blue">FYI: If you plan to add or delete <b>a lot</b> of edges, suggest you use MySQL query/queries script. </p>
+    <p style="color: blue"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  An edge is undirected. Therefore A=>B or B => A is equivalent to A <=> B.</p>
+    <div class="row">
+      <form class="search navbar-form navbar-left" method='post'>
+        <p style="color: red">Please select level, Start Node and End Node. </p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="text-align: center;">Floor</th>
+              <th style="text-align: center;">Start Node</th>
+              <th style="text-align: center;">End Node</th>
+              <th style="text-align: center;"></th>
+              <th style="text-align: center;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <select id="EdgeFloor" name="EdgeFloor" > 
+                  <option value="3" <?php if ($edge_floor == 3) { ?> selected="selected" <?php ;} ?> >Level 3</option>
+                  <option value="4" <?php if ($edge_floor == 4) { ?> selected="selected" <?php ;} ?> >Level 4</option>
+                  <option value="5" <?php if ($edge_floor == 5) { ?> selected="selected" <?php ;} ?> >Level 5</option>
+                </select>
+              </td>
+              <td>
+                <select id="StartNode" name="StartNode">
+                  <?php if ($node_list != null) { ?> 
+                    <?php foreach ($node_list as $node) : ?>
+                      <option value="<?php echo $node->id; ?>" <?php if ($node->id == $StartNode){ ?> selected="selected" <?php ;} ?> ><?php echo $node->name; ?></option>
+                    <?php endforeach ?>
+                  <?php } ?> 
+                </select>  
+              </td>
+              <td>
+                <select id="EndNode" name="EndNode">
+                  <?php if ($node_list != null) { ?> 
+                    <?php foreach ($node_list as $node) : ?>
+                      <option value="<?php echo $node->id; ?>" <?php if ($node->id == $EndNode){ ?> selected="selected" <?php ;} ?> ><?php echo $node->name; ?></option>
+                    <?php endforeach ?>
+                  <?php } ?> 
+                </select>
+              </td>
+              <td>
+                <input type="hidden" name="form_name" value="AddEdge">
+              </td>
+              <td>
+                <input class="btn btn-primary" type='submit' id="Add" name="Add" value="Add Edge">
+                <input class="btn btn-primary" type='submit' id="Delete" name="Delete" value="Delete Edge">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form> 
+      <form id="node_form" class="navbar-form navbar-right" method='post' style="display: none;">
+        <input type="number" id="nodefloor" name="floor" <?php if ($edge_floor == null) {?> value ="3" <?php ;} else { ?> value ="<?php echo $edge_floor ; }?>" >
+        <input name="form_name" value="node_list">
+      </form>
+    </div>
+  </div>  
+</div>
+
+<div class="static-images" style="display: none;">
+  <img id="image3" class="map" width='637' height='1000' src="img/ECERF3_DataPort.png" />
+  <img id="image4" class="map" src="img/ECERF4_DataPort.png" height=1000 width=637 />
+  <img id="image5" class="map" src="img/ECERF5_DataPort.png" height=1000 width=637 />
+</div>
