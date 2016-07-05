@@ -48,7 +48,6 @@ PRESENTATION OF THE APP
 - Search by Data Port Number
 
 The default floor number is 3. Or you can select desired level from left side level bar. 
-
 If the desired data port is exist, its detail will be displayed, a blinking circle will be printed overplay on the floor map. Meanwhile if the data port’s location is known, the shortest path from the floor’s main entrance to the destination will be drew. 
 
 If you think that the coordinate of the data port is wrong, you can update it by clicking update  button. Then click the new coordinate on the map. 
