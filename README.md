@@ -5,8 +5,10 @@ This simple local web app that can run on localhost is built using PHP Zend Fram
 
 WEB SERVER SETUP FOR THE APP
 ------------
-2.1	Apache Setup
+### Apache Setup
+
 To use Apache, setup a virtual host to point to the public/ directory of the project. Append virtual host info in file “httpd-vhosts.conf “(the file is typically located at c:\Apache24\conf\extra). It should look something like below:
+
 <VirtualHost portmap.localhost.com:8080>
     ServerName portmap.localhost.com
     DocumentRoot C:/WebApp/port_map_php/public
@@ -21,7 +23,8 @@ To use Apache, setup a virtual host to point to the public/ directory of the pro
         </IfModule>
     </Directory>
 </VirtualHost>
-2.2	Microsoft Internet Information Services (IIS)
+
+### Microsoft Internet Information Services (IIS)
 •	Open notepad as administrator user
 •	Add an entry to your hosts (file) like – “127.0.0.2 portmap.localhost.com” [one host in each line]. The hosts file is typically located at C:\WINDOWS\system32\drivers\etc\hosts
 •	Now save the hosts file and close
