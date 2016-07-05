@@ -66,6 +66,5 @@ Selecting a level, entering a node name, clicking on the map to get coordinate a
 - Manage Edges
  
 If you plan to add or delete a lot of edges at the same time, we strongly suggest you use MySQL query/queries script. It is must easier and timesaving. In the database, an edge is undirected. Therefore A=>B or B => A is equivalent to A <=>B. 
-
 Selecting floor and then selecting Start Node and End Node are all you need to do to add or delete an edge. 
 
