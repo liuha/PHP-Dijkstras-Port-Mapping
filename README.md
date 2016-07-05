@@ -25,10 +25,10 @@ To use Apache, setup a virtual host to point to the public/ directory of the pro
 </VirtualHost>
 ```
 ### Microsoft Internet Information Services (IIS)
--Open notepad as administrator user
--Add an entry to your hosts (file) like – “127.0.0.2 portmap.localhost.com” [one host in each line]. The hosts file is typically located at C:\WINDOWS\system32\drivers\etc\hosts
--Now save the hosts file and close
--Last create an entry in your IIS by following http://support.microsoft.com/kb/816576 with the above host name, i.e. portmap.localhost.com. Set the physical path to point to port_map_php\public directory
+- Open notepad as administrator user
+- Add an entry to your hosts (file) like – “127.0.0.2 portmap.localhost.com” [one host in each line]. The hosts file is typically located at C:\WINDOWS\system32\drivers\etc\hosts
+- Now save the hosts file and close
+- Last create an entry in your IIS by following http://support.microsoft.com/kb/816576 with the above host name, i.e. portmap.localhost.com. Set the physical path to point to port_map_php\public directory
 
 MySQL Database
 ------------
@@ -39,7 +39,7 @@ Then modify the username and password of MySQL in file “local.php “(the file
 return array(
 	'db' => array(
 		'username'         => 'guest',
-        	'password'         => '',		
+		'password'         => '',		
 	),
 );
 ```
