@@ -7,9 +7,9 @@
 <div class="container-fluid">
   <div class="col-sm-3 col-md-2 sidebar">
     <ul class="nav nav-sidebar">
-      <li><a id="3" class="router" data-toggle="pill" href="#Level3"><h2>Level 3</h2></a></li>
-      <li><a id="4" class="router" data-toggle="pill" href="#Level4"><h2>Level 4</h2></a></li>
-      <li><a id="5" class="router" data-toggle="pill" href="#Level5"><h2>Level 5</h2></a></li>
+      <?php for ($i = 1; $i<=6; $i++) { ?>
+        <li><a id="<?php echo $i; ?>" class="router" data-toggle="pill" href="#Level<?php echo $i; ?>"><h2>Level <?php echo $i; ?></h2></a></li>
+      <?php } ?>
     </ul>
   </div>
   <div class="tab-content col-sm-9 col-md-10">
@@ -18,7 +18,7 @@
     <h4 style="color: red"><?php echo $error ?> </h4>
     <div class="row">
       <form class="search navbar-form navbar-left" method='post'>
-        <p style="color: red">Pleas select level, enter node name and click coordinates</p>
+        <p style="color: red">Please select level, enter node name and click coordinates</p>
         <table class="table">
           <thead>
             <tr>
@@ -56,18 +56,20 @@
       </form> 
     </div>
   
-    <div id="Level3" class="col-sm-8 tab-pane fade">
-      <canvas id="canvas3" class="map" width='677' height='1040'></canvas>
-      <div id="marker3" class="marker glyphicon glyphicon-remove-circle"></div>
-    </div>
-    <div id="Level4" class="col-sm-8 tab-pane fade">
-      <canvas id="canvas4" class="map" width='677' height='1040'></canvas>
-      <div id="marker4" class="marker glyphicon glyphicon-remove-circle"></div>
-    </div>
-    <div id="Level5" class="col-sm-8 tab-pane fade">
-       <canvas id="canvas5" class="map" width='677' height='1040'></canvas>
-      <div id="marker5" class="marker glyphicon glyphicon-remove-circle"></div>
-    </div>
+    <?php for ( $i = 1; $i<=6; $i++) { ?>
+      <div id="Level<?php echo $i; ?>" class="col-sm-8 tab-pane fade">
+      <?php switch ($i) {
+        case 1: ?>
+          <canvas id="canvas<?php echo $i; ?>" class="map" width='1011' height='1040'></canvas>
+          <?php break; 
+        default: ?>
+          <canvas id="canvas<?php echo $i; ?>" class="map" width='677' height='1040'></canvas>
+          <?php break;
+       } ?>
+        <div id="marker<?php echo $i; ?>" class="marker glyphicon glyphicon-remove-circle"></div>
+      </div>
+    <?php } ?>
+
   </div>
   <p>&nbsp;</p>
 
@@ -93,9 +95,9 @@
             <tr>
               <td>
                 <select id="EdgeFloor" name="EdgeFloor" > 
-                  <option value="3" <?php if ($edge_floor == 3) { ?> selected="selected" <?php ;} ?> >Level 3</option>
-                  <option value="4" <?php if ($edge_floor == 4) { ?> selected="selected" <?php ;} ?> >Level 4</option>
-                  <option value="5" <?php if ($edge_floor == 5) { ?> selected="selected" <?php ;} ?> >Level 5</option>
+                  <?php for ( $i = 1; $i<=6; $i++) { ?>
+                    <option value="<?php echo $i; ?>" <?php if ($edge_floor == $i) { ?> selected="selected" <?php ;} ?> >Level <?php echo $i; ?></option>
+                  <?php } ?>
                 </select>
               </td>
               <td>
@@ -128,7 +130,7 @@
         </table>
       </form> 
       <form id="node_form" class="navbar-form navbar-right" method='post' style="display: none;">
-        <input type="number" id="nodefloor" name="floor" <?php if ($edge_floor == null) {?> value ="3" <?php ;} else { ?> value ="<?php echo $edge_floor ; }?>" >
+        <input type="number" id="nodefloor" name="floor" value ="" >
         <input name="form_name" value="node_list">
       </form>
     </div>
@@ -136,7 +138,14 @@
 </div>
 
 <div class="static-images" style="display: none;">
-  <img id="image3" class="map" width='637' height='1000' src="img/ECERF3_DataPort.png" />
-  <img id="image4" class="map" src="img/ECERF4_DataPort.png" height=1000 width=637 />
-  <img id="image5" class="map" src="img/ECERF5_DataPort.png" height=1000 width=637 />
+    <?php for ( $i = 1; $i<=6; $i++) { ?>
+    <?php switch ($i) {
+      case 1: ?>
+        <img id="image<?php echo $i; ?>" class="map" src="img/ECERF<?php echo $i; ?>_DataPort.png" height=1000 width=971 />
+        <?php break; 
+      default: ?>
+        <img id="image<?php echo $i; ?>" class="map" src="img/ECERF<?php echo $i; ?>_DataPort.png" height=1000 width=637 />
+        <?php break;
+     } ?>
+  <?php } ?>
 </div>

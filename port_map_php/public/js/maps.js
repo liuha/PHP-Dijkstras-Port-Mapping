@@ -1,20 +1,22 @@
 $( document ).ready( function() {
 
 	// Render images on canvas
-	var canvas = document.getElementById("canvas3");
-    var ctx = canvas.getContext("2d");
-    var img = document.getElementById("image3");
-   	ctx.drawImage(img, 10, 10, 637, 1000);
-
-   	var canvas = document.getElementById("canvas4");
-    var ctx = canvas.getContext("2d");
-    var img = document.getElementById("image4");
-   	ctx.drawImage(img, 10, 10, 637, 1000);
-
-   	var canvas = document.getElementById("canvas5");
-    var ctx = canvas.getContext("2d");
-    var img = document.getElementById("image5");
-   	ctx.drawImage(img, 10, 10, 637, 1000);
+	// 6 is total floor
+	for (i = 1 ; i <= 6 ; i++)
+	{
+		var canvas_id = "canvas" + i;
+		var img_id = "image" + i;
+		var canvas = document.getElementById(canvas_id);
+		var ctx = canvas.getContext("2d");
+		var img = document.getElementById(img_id);
+		switch (i){
+			case 1:
+				ctx.drawImage(img, 10, 10, 971, 1000);
+				break;
+			default:
+				ctx.drawImage(img, 10, 10, 637, 1000);
+		}
+	}
 
 	// Gets the floor from the current data set
 	function getCurrentLevel() {
@@ -101,6 +103,7 @@ $( document ).ready( function() {
 	// When the map is clicked find the offset and page event to track 
 	// requested coordinates, drawmarker at location
 	$( '.map' ).on( "click", function( event ) {
+		//for index sub page, search function
 		if($(this).hasClass('updating')) {
 	  		var offset = $(this).offset();
 	  		var x_coordinate = Math.round(event.pageX-offset.left);
@@ -109,6 +112,16 @@ $( document ).ready( function() {
 			updateMarker(getCurrentLevel(), x_coordinate, y_coordinate);
 			drawpath(getCurrentLevel());
 			$('#update_form').submit();
+		}
+		//for add port subpage, add a new port function
+		if($(this).hasClass('adding')){
+			var offset = $(this).offset();
+	  		var x_coordinate = Math.round(event.pageX-offset.left);
+	  		var y_coordinate = Math.round(event.pageY-offset.top);
+			document.getElementById("x_add").value = x_coordinate;
+	  		document.getElementById("y_add").value = y_coordinate;
+			var current_level = parseInt($('#floor').val());
+			updateMarker(current_level, x_coordinate, y_coordinate);
 		}
   	})
 
@@ -129,21 +142,21 @@ $( document ).ready( function() {
 	$('.router').click(function() {
 
 		// Render images on canvas
-		var canvas = document.getElementById("canvas3");
-	    var ctx = canvas.getContext("2d");
-	    var img = document.getElementById("image3");
-	   	ctx.drawImage(img, 10, 10, 637, 1000);
-
-	   	var canvas = document.getElementById("canvas4");
-	    var ctx = canvas.getContext("2d");
-	    var img = document.getElementById("image4");
-	   	ctx.drawImage(img, 10, 10, 637, 1000);
-
-	   	var canvas = document.getElementById("canvas5");
-	    var ctx = canvas.getContext("2d");
-	    var img = document.getElementById("image5");
-	   	ctx.drawImage(img, 10, 10, 637, 1000);
-
+		for (i = 1 ; i <= 6 ; i++)
+		{
+			var canvas_id = "canvas" + i;
+			var img_id = "image" + i;
+			var canvas = document.getElementById(canvas_id);
+			var ctx = canvas.getContext("2d");
+			var img = document.getElementById(img_id);
+			switch (i){
+				case 1:
+					ctx.drawImage(img, 10, 10, 971, 1000);
+					break;
+				default:
+					ctx.drawImage(img, 10, 10, 637, 1000);
+			}
+		}
 
 		var x = $(this).attr('id');
 	  	console.log(x);
@@ -178,7 +191,7 @@ $( document ).ready( function() {
     	var canvasTarget = "canvas"+target; 
     	var canvas = document.getElementById(canvasTarget);
     	var ctx = canvas.getContext("2d");
-    	ctx.lineWidth="6";
+    	ctx.lineWidth="3";
     	ctx.lineCap="round";
     	ctx.strokeStyle="red";
     	ctx.lineJoin = "round";
@@ -224,6 +237,27 @@ $( document ).ready( function() {
     		}
     	}  		
     }
+
+    //get floor data port list
+    $("#modify_floor").on('change',function(e){
+    	var floor = document.getElementById("modify_floor").value;
+    	if (floor != 0 )
+    	{
+    		$('#ddl_port_floor').val(floor);
+    		$('#ddl_port_num').val(1);
+    		$('#port_llist_form').submit();
+    	}
+    });
+
+    //get data port information for data port drop down list
+    $("#modify_port_num").on('change',function(e){
+    	var floor = document.getElementById("modify_floor").value;
+    	var port_num = document.getElementById("modify_port_num").value;
+
+		$('#ddl_port_floor').val(floor);
+		$('#ddl_port_num').val(port_num);
+		$('#port_llist_form').submit();
+    });
 
 
 });

@@ -1,15 +1,16 @@
 <table style="margin: 0px; width: 100%;">
   <tr>
     <td ><h1> Data Port Map for ECERF! </h1> </td>
+    <td><a href="<?php echo $this->url('dataport', array('action'=>'add'));?>" class="top-menu"><span class="glyphicon glyphicon-plus"></span>Add new DataPort</a></td>
     <td ><a href="node" class="top-menu"><span class="glyphicon glyphicon-plus"></span> Add Path Node</a></td>
   </tr>
 </table>  
 <div class="container-fluid">
   <div class="col-sm-3 col-md-2 sidebar">
     <ul class="nav nav-sidebar">
-      <li><a id="3" class="router" data-toggle="pill" href="#Level3"><h2>Level 3</h2></a></li>
-      <li><a id="4" class="router" data-toggle="pill" href="#Level4"><h2>Level 4</h2></a></li>
-      <li><a id="5" class="router" data-toggle="pill" href="#Level5"><h2>Level 5</h2></a></li>
+      <?php for ($i = 1; $i<=6; $i++) { ?>
+        <li><a id="<?php echo $i; ?>" class="router" data-toggle="pill" href="#Level<?php echo $i; ?>"><h2>Level <?php echo $i; ?></h2></a></li>
+      <?php } ?>
     </ul>
   </div>
   <div class="tab-content col-sm-9 col-md-10">
@@ -36,7 +37,7 @@
 
         <?php } if ($port != null) { ?>
           <?php  if ( $port->port < 10 ) { ?>
-            <h2>Data Port: D-00 <?php echo  $port->port; ?></h2>
+            <h2>Data Port: D-00<?php echo  $port->port; ?></h2>
           <?php  } elseif ($port->port < 100 ) { ?>
             <h2>Data Port: D-0<?php echo  $port->port; ?></h2>
           <?php  } else { ?>
@@ -118,7 +119,6 @@
                   <td id="<?php echo  $counter; ?>port" > D-<?php echo  $port->port; ?> </td>
                 <?php  } ?>
 
-
                 <td id="<?php echo  $counter; ?>section" > <?php echo  $port->section; ?> </td>
                 <td id="<?php echo  $counter; ?>x" style="display: none;"> <?php echo  $port->x_coord; ?> </td>
                 <td id="<?php echo  $counter; ?>y" style="display: none;"> <?php echo  $port->y_coord; ?> </td>
@@ -129,24 +129,34 @@
       </div>  
       <?php } ?>
     </div>
-        
-    <div id="Level3" class="col-sm-8 tab-pane fade">
-      <canvas id="canvas3" class="map" width='677' height='1040'></canvas>
-      <div id="marker3" class="marker glyphicon glyphicon-remove-circle"></div>
-    </div>
-    <div id="Level4" class="col-sm-8 tab-pane fade">
-      <canvas id="canvas4" class="map" width='677' height='1040'></canvas>
-      <div id="marker4"class="marker glyphicon glyphicon-remove-circle"></div>
-    </div>
-    <div id="Level5" class="col-sm-8 tab-pane fade">
-       <canvas id="canvas5" class="map" width='677' height='1040'></canvas>
-      <div id="marker5"class="marker glyphicon glyphicon-remove-circle"></div>
-    </div>
+
+    <?php for ( $i = 1; $i<=6; $i++) { ?>
+      <div id="Level<?php echo $i; ?>" class="col-sm-8 tab-pane fade">
+      <?php switch ($i) {
+        case 1: ?>
+          <canvas id="canvas<?php echo $i; ?>" class="map" width='1011' height='1040'></canvas>
+          <?php break; 
+        default: ?>
+          <canvas id="canvas<?php echo $i; ?>" class="map" width='677' height='1040'></canvas>
+          <?php break;
+       } ?>
+        <div id="marker<?php echo $i; ?>" class="marker glyphicon glyphicon-remove-circle"></div>
+      </div>
+    <?php } ?> 
+
   </div>
 </div>
 
 <div class="static-images" style="display: none;">
-  <img id="image3" class="map" width='637' height='1000' src="img/ECERF3_DataPort.png" />
-  <img id="image4" class="map" src="img/ECERF4_DataPort.png" height=1000 width=637 />
-  <img id="image5" class="map" src="img/ECERF5_DataPort.png" height=1000 width=637 />
+  <?php for ( $i = 1; $i<=6; $i++) { ?>
+    <?php switch ($i) {
+      case 1: ?>
+        <img id="image<?php echo $i; ?>" class="map" src="img/ECERF<?php echo $i; ?>_DataPort.png" height=1000 width=971 />
+        <?php break; 
+      default: ?>
+        <img id="image<?php echo $i; ?>" class="map" src="img/ECERF<?php echo $i; ?>_DataPort.png" height=1000 width=637 />
+        <?php break;
+     } ?>
+  <?php } ?> 
+
 </div>

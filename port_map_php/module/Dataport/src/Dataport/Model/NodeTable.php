@@ -53,9 +53,28 @@ class NodeTable
       $this->tableGateway->update($data, array('id' => $id));
 
     }
+    //search node by node floor and name
+    public function getNodebyFloorandName($floor, $name)
+    {
+      
+      $nodeset = $this->tableGateway->select(array('floor' => $floor, 'name' => $name));
+      $nodeset->buffer();
+      $node = $nodeset->current();
+      return $node;
+    }
 
     public function addNode($data)
     {
-        $this->tableGateway->insert($data);
+      $this->tableGateway->insert($data);
+    }
+    //delete a node
+    //parameters: floor, name
+    public function deleteNode($floor, $name)
+    {
+      $data = array(
+            'floor' => $floor,
+            'name' => $name,
+        );
+      $this->tableGateway->delete($data);
     }
 }

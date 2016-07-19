@@ -11,12 +11,15 @@ use Dataport\Model\Graph;
 class DataportController extends AbstractActionController
 {
 
+    //main page, search data port 
     public function indexAction()
     {
         
         $port = null;
         $error = null;
+        //path list fron entrance to data port 
         $path_list = null;
+        //room port list
         $port_list = null;
 
         $request = $this->getRequest();
@@ -115,13 +118,9 @@ class DataportController extends AbstractActionController
             //if some nodes connect to end node, then find the shorest path from floor entrance to it. 
             // otherwise $path_list is null 
             if ($edgeset->count() != 0){
-                if($port->floor == 3 ){
-                    $star = "3_enter";
-                }elseif ( $port->floor == 4 ){
-                    $star = "4_enter";
-                }else {
-                    $star = "5_enter";
-                }
+
+                //set start node name, ( from main entrance of level)
+                $star = $port->floor . "_enter";
                 
                 //get entrance node id;
                 $entrance_node = $nodeTable->getNode($star, $port->floor);
@@ -180,4 +179,156 @@ class DataportController extends AbstractActionController
         return $path_list;
     }
     
+    # Add a new data port sub page
+    public function addAction()
+    {
+
+        $error = null;
+        $modify_error= null;
+        //floor number of data port which need to be modified. 
+        $modify_floor = null;
+        //data port which need to be modified
+        $modify_port = null;
+        //port list of a specify floor
+        $floor_port_list = null;
+
+        $portTable = $this->getServiceLocator()->get('PortTable');
+        $nodeTable = $this->getServiceLocator()->get('NodeTable');
+
+        //initialize foor port drop down list 
+        $modify_floor = 1;
+        $floor_port_list = $portTable->getPortListByFloor($modify_floor);
+        $portinfo = $portTable->getPortByPortandFloor("1", $modify_floor);
+        $modify_port = $portinfo['port'];
+
+        $request = $this->getRequest();
+        if($request->isPost()){
+            #get submit form name
+            $form_name = $request->getPost()->get('form_name');
+
+            #add a new dataport
+            if($form_name == "add_port")
+            {
+                $floor = (int)$this->params()->fromPost('floor');
+                $port_num = (int)$this->params()->fromPost('port_num');
+                $room = $this->params()->fromPost('room');
+                $section = $this->params()->fromPost('section');
+                $x_add = (int)$this->params()->fromPost('x_add');
+                $y_add = (int)$this->params()->fromPost('y_add'); 
+                //valide data, room and section could be unknown, coordinates could be null
+                if ($floor == 0 )
+                {
+                    $error = "ERROR!!! Please select a floor from left side menu bar!";
+                }
+                if($room == null)
+                {
+                    $room = "unknown";
+                }
+                if ($section ==null)
+                {
+                    $section = "unknown";
+                }
+                if ( $x_add == 0 || $y_add == 0 )
+                {
+                    $x_add = null;
+                    $y_add = null;
+                }
+                # set port name using floor_port format
+                $node_name = (string)$floor."_".(string)$port_num;
+                
+                #build dataport info
+                $port_data = array(
+                        'floor'     => $floor,
+                        'port'      => $port_num,
+                        'room'      => $room,
+                        'section'   => $section,
+                        'x_coord'   => $x_add,
+                        'y_coord'   => $y_add,
+                    );
+                #build node data
+                $node_data = array(
+                        'name'      => $node_name,
+                        'floor'     => $floor,
+                        'x_coord'   => $x_add,
+                        'y_coord'   => $y_add,
+                    );
+                #if error is null, add data to dataport and node tables
+                if (is_null($error))
+                {
+                    #check whether the data port already exists or not, if not, add it
+                    $portinfo = $portTable->getPortByPortandFloor($port_num, $floor);
+                    $checkport = $portinfo['port'];
+                    if ( $checkport != null)
+                    {
+                        $error = "Error!!! The data port: D-".(string)$port_num." in floor " . (string)$floor." already exists, please add another one.";
+                    }else{
+                        try{
+                            $portTable->addPort($port_data);
+                            $nodeTable->addNode($node_data);
+                            $error = "Add data port: D-".(string)$port_num." for floor " . (string)$floor." successfully."; 
+
+                            //be used to correct record
+                            //$portTable->deletePort("1","42");
+                            //$nodeTable->deleteNode("1","1_42");
+
+                        }
+                        catch(Exception $e) {
+                            $error = $e->getMessage();
+                        }
+                    }
+                }
+
+            }
+            //get floor port list for drop down list
+            if($form_name =="port_list")
+            {
+                $modify_floor = (int)$this->params()->fromPost('floor');
+                $modify_port_num = (int)$this->params()->fromPost('port_num');
+                   
+                $floor_port_list = $portTable->getPortListByFloor($modify_floor); 
+                $portinfo = $portTable->getPortByPortandFloor($modify_port_num, $modify_floor);
+                $modify_port = $portinfo['port'];
+            }
+            // modify port's room and section
+            if($form_name == "modify_port")
+            {
+                $modify_floor = (int)$this->params()->fromPost('floor');
+                $floor_port_list = $portTable->getPortListByFloor($modify_floor); 
+                $modify_port_num = (int)$this->params()->fromPost('port_num');
+                $modify_room = $this->params()->fromPost('room');
+                $modify_section = $this->params()->fromPost('section');
+
+                $portinfo = $portTable->getPortByPortandFloor($modify_port_num, $modify_floor);
+                $modify_port = $portinfo['port'];
+                if ($modify_port != null)
+                {
+                    $modify_port->room = $modify_room;
+                    $modify_port->section = $modify_section;
+
+                    try {
+                        $portTable->updatePort($modify_port);
+                        $modify_error = "Upndate Data Port-- Floor: ".$modify_floor." ,D-".$modify_port_num." successfully!";
+                    }
+                    catch(Exception $e) {
+                        $modify_error = $e->getMessage();
+                    } 
+                }else{
+
+                    $modify_error = "Error!!! Please select a dataport.";
+                }
+                
+
+            }
+
+        }
+
+        $ViewModel = new ViewModel(array('error'    => $error,
+                        'modify_error'  => $modify_error,
+                        'modify_floor'  => $modify_floor,
+                        'modify_port'   => $modify_port,
+                        'floor_port_list' => $floor_port_list,
+                    ));
+        //$ViewModel->setTemplate('dataport/dataport/add');
+        return $ViewModel;
+    }
 }

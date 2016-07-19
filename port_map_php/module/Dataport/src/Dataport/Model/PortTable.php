@@ -87,4 +87,28 @@ class PortTable
   		//}
   	}
 
+    //add a new data port
+    public function addPort($data)
+    {
+      
+      $this->tableGateway->insert($data);
+    }
+    //delete a port 
+    //parameters: floor number and port number
+    public function deletePort($floornum,$portnum)
+    {
+      $data = array(
+          'floor'   => (int)$floornum,
+          'port'    => (int)$portnum,
+        );
+      $this->tableGateway->delete($data);
+    }
+    //get port list for specify floor
+    public function getPortListByFloor($floornum)
+    {
+      $floornum = (int)$floornum;
+      $portset = $this->tableGateway->select(array('floor' => $floornum ));
+      $portset->buffer();
+      return $portset;
+    }
 }

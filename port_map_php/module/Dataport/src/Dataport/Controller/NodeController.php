@@ -13,15 +13,14 @@ class NodeController extends AbstractActionController
 
     public function indexAction()
     {
-        //return new ViewModel();
-        $edge_floor = null;
         $node_list = null;
         $error = null;
         $edgeerror = null;
+        $edge_floor = null;
         $End_Node = null;
         $Start_Node = null;
 
-        //iniialize Add edge form
+        //initialize Add edge form
         $edge_floor = 3;
         $nodeTable = $this->getServiceLocator()->get('NodeTable');
         $node_list = $nodeTable->getNodebyFloor("3"); 
@@ -49,15 +48,23 @@ class NodeController extends AbstractActionController
             	}elseif ( $x_coord == 0 ) {
             		$error = "Pleaes click on the map to get node's coordinate!";
             	}else{
+                    #check whether the node already exists or not, if not, add the node
 
-            		try{
-            			$nodeTable = $this->getServiceLocator()->get('NodeTable');
-            			$nodeTable->addNode($data);
-            			$error = "Add the Node: \"" . $name . "\" for floor: " . $floor . " Sucessfully!";
-            		}
-            		catch(Exception $e) {
-     					$error = $e->getMessage();
-    				}
+                    $checknode = $nodeTable->getNodebyFloorandName($floor, $name);
+                    if ($checknode){
+                        $error = "Error!!! The node: ".$name." for floor: ".$floor." already exists, try another one!";
+                    }else{
+                       try{
+                        
+                            $nodeTable = $this->getServiceLocator()->get('NodeTable');
+                            //$nodeTable->deleteNode("1", "1_intersection_");
+                            $nodeTable->addNode($data);
+                            $error = "Add the Node: \"" . $name . "\" for floor: " . $floor . " Sucessfully!";
+                        }
+                        catch(Exception $e) {
+                            $error = $e->getMessage();
+                        } 
+                    }           		
             	}
             }
             //return the node list for selected floor to create start node and end node dropdownlist
@@ -78,33 +85,39 @@ class NodeController extends AbstractActionController
                 $End_Node = (int)$this->params()->fromPost('EndNode');
                 $node_list = $nodeTable->getNodebyFloor($edge_floor); 
 
-                $star = $nodeTable->getNodebyId($Start_Node)->name;
-                $end = $nodeTable->getNodebyId($End_Node)->name;
+                if ($Start_Node !=0 && $End_Node !=0)
+                {
+                    $star = $nodeTable->getNodebyId($Start_Node)->name;
+                    $end = $nodeTable->getNodebyId($End_Node)->name;
 
-                if ( $Start_Node == $End_Node ){
-                    $edgeerror = "Start Node: $star and End Node: $end are same, try different pair!";
+                    if ( $Start_Node == $End_Node ){
+                        $edgeerror = "Start Node: $star and End Node: $end are same, try different pair!";
+                    }else{
+                        $edge = $edgeTable->getEdge($Start_Node, $End_Node);
+
+                        // add edges
+                        if (isset($_POST['Add'])){
+                            if ($edge != null){
+                                $edgeerror = "The edge: $star <---> $end is already existing, try different pair!";
+                            }else{
+                                $edgeTable->addEdge($Start_Node, $End_Node);
+                                $edgeerror = "Add edge: $star <---> $end Sucessfully!";                        
+                            }    
+                        }
+                        //delete edges 
+                        if (isset($_POST['Delete'])){
+                            if ($edge == null){
+                                $edgeerror = "The edge: $star <---> $end doesn't exist, try different pair!";
+                            }else{
+                                $edgeTable->deleteEdge($Start_Node, $End_Node);
+                                $edgeerror = "Delete edge: $star <---> $end Sucessfully!";                        
+                            }    
+                        }
+                    } 
                 }else{
-                    $edge = $edgeTable->getEdge($Start_Node, $End_Node);
-
-                    // add edges
-                    if (isset($_POST['Add'])){
-                        if ($edge != null){
-                            $edgeerror = "The edge: $star <---> $end is already existing, try different pair!";
-                        }else{
-                            $edgeTable->addEdge($Start_Node, $End_Node);
-                            $edgeerror = "Add edge: $star <---> $end Sucessfully!";                        
-                        }    
-                    }
-                    //delete edges 
-                    if (isset($_POST['Delete'])){
-                        if ($edge == null){
-                            $edgeerror = "The edge: $star <---> $end doesn't exist, try different pair!";
-                        }else{
-                            $edgeTable->deleteEdge($Start_Node, $End_Node);
-                            $edgeerror = "Delete edge: $star <---> $end Sucessfully!";                        
-                        }    
-                    }
+                   $edgeerror =" Error!!! Please select a node. " ;
                 }
+                
             }
         }
 

@@ -1,0 +1,172 @@
+<table style="margin: 0px; width: 100%;">
+  <tr>
+    <td ><h1> Add DataPort for ECERF! </h1> </td>
+    <td ><a href="<?php echo $this->url('dataport', array('action'=>'index'));?>" class="top-menu"><span class="glyphicon glyphicon-search"></span>Search DataPort</a></td>
+  </tr>
+</table>  
+<div class="container-fluid">
+  <div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+      <?php for ($i = 1; $i<=6; $i++) { ?>
+        <li><a id="<?php echo $i; ?>" class="router" data-toggle="pill" href="#Level<?php echo $i; ?>"><h2>Level <?php echo $i; ?></h2></a></li>
+      <?php } ?>
+    </ul>
+  </div>
+  <div class="tab-content col-sm-9 col-md-10">
+    
+    <h3 style="color: blue"> Add a Data Port </h3>
+    <h4 style="color: red"><?php echo $error ?> </h4>
+    <div class="row">
+      <form class="search navbar-form navbar-left" method='post'>
+        <p style="color: red">To add a new data port, please 
+            <br> 1. Select Level from left side bar 
+            <br> 2. Enter dataport number 
+            <br> 3. Enter room number and section if you know them 
+            <br> 4. Click the map to get coordinates if you know where it is
+            <br> 5. Click Add Port button</p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="text-align: center;">Floor</th>
+              <th style="text-align: center;">Dataport Number</th>
+              <th style="text-align: center;">Room</th>
+              <th style="text-align: center;">Section</th>
+              <th style="text-align: center;">X Coordinate</th>
+              <th style="text-align: center;">Y Coordinates</th>
+              <th style="text-align: center;"></th>
+              <th style="text-align: center;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input type="number" id="floor" name="floor" class="form-control" placeholder="Floor:"  required="true" readonly>
+              </td>
+              <td>
+                <input type="number" name="port_num" id="port_num" class="form-control" placeholder="Port Number" min="1" required="true">
+              </td>
+              <td>
+                <input type="text" name="room" id="room" class="form-control" placeholder="eg: W3-010" >
+              </td>
+              <td>
+                <input type="text" name="section" id="section" class="form-control" placeholder="Section" >
+              </td>
+              <td>
+                <input type="text" name="x_add" id="x_add" class="form-control" placeholder="x..." readonly>
+              </td>
+              <td>
+                <input type="text" name="y_add" id="y_add" class="form-control" placeholder="y..." readonly>
+              </td>
+              <td>
+                <input type="hidden" name="form_name" value="add_port">
+              </td>
+              <td>
+                <input class="btn btn-primary" type='submit' id="Add" name="Add" value="Add Port">
+              </td>
+            </tr>
+          </tbody>
+        </table> 
+      </form> 
+    </div>
+           
+    <?php for ( $i = 1; $i<=6; $i++) { ?>
+      <div id="Level<?php echo $i; ?>" class="col-sm-8 tab-pane fade">
+      <?php switch ($i) {
+        case 1: ?>
+          <canvas id="canvas<?php echo $i; ?>" class="map adding" width='1011' height='1040'></canvas>
+          <?php break; 
+        default: ?>
+          <canvas id="canvas<?php echo $i; ?>" class="map adding" width='677' height='1040'></canvas>
+          <?php break;
+       } ?>
+        <div id="marker<?php echo $i; ?>" class="marker glyphicon glyphicon-remove-circle"></div>
+      </div>
+    <?php } ?> 
+  </div>
+
+  <div class="tab-content col-sm-9 col-md-10">
+    <h3 style="color: blue"> Modify Data Port </h3>
+    <h4 style="color: red"><?php echo $modify_error ?> </h4>
+    <p style="color: blue">FYI: Modify room and section of a data port.</p>
+    <form class="search navbar-form navbar-left" method='post'>
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="text-align: center;">Floor</th>
+            <th style="text-align: center;">Dataport Number</th>
+            <th style="text-align: center;">Room</th>
+            <th style="text-align: center;">Section</th>
+            <th style="text-align: center;"></th>
+            <th style="text-align: center;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <select id="modify_floor" name="floor" > 
+                <?php for ( $i = 1; $i<=6; $i++) { ?>
+                  <option value="<?php echo $i; ?>" <?php if ($modify_floor == $i) { ?> selected="selected" <?php ;} ?> >Level <?php echo $i; ?></option>
+                <?php } ?>
+              </select>
+            </td>
+            <td>
+              <select id="modify_port_num" name ="port_num">
+                <?php if ($floor_port_list != null ) { ?>
+                  <?php foreach ($floor_port_list as $port) : ?>
+                    <option value="<?php echo $port->port; ?>" 
+                        <?php if ($modify_port != null ) {
+                                if ( $port->port == $modify_port->port ) {?> 
+                                  selected="selected" 
+                                <?php ;} ?>
+                              <?php ;} ?>
+                    > <?php echo $port->port; ?> </option>
+                  <?php endforeach ?>
+                <?php } ?>
+              </select>
+            </td>
+            <td>
+              <input type="text" name="room" id="modify_room" class="form-control" placeholder="eg: W3-010" 
+                <?php if ($modify_port != null ) { ?> 
+                  value="<?php echo $modify_port->room; ?>" 
+                <?php } ?>
+              >
+            </td>
+            <td>
+              <input type="text" name="section" id="modify_section" class="form-control" placeholder="Section" 
+                <?php if ($modify_port != null ) { ?> 
+                  value="<?php echo $modify_port->section; ?>" 
+                <?php } ?>
+              >
+            </td>
+            <td>
+              <input type="hidden" name="form_name" value="modify_port">
+            </td>
+            <td>
+              <input class="btn btn-primary" type='submit' id="Update" name="modify" value="Modify Port">
+            </td>
+          </tr>
+        </tbody>
+      </table> 
+    </form>
+    <form id="port_llist_form" class="navbar-form navbar-right" method='post' style="display: none;">
+      <input type="number" name="floor" id="ddl_port_floor" value="">
+      <input type="number" name="port_num" id ="ddl_port_num" value="">
+      <input name="form_name" value="port_list">
+    </form>
+    <from>
+    </from>
+  </div>
+</div>
+
+<div class="static-images" style="display: none;">
+  <?php for ( $i = 1; $i<=6; $i++) { ?>
+    <?php switch ($i) {
+      case 1: ?>
+        <img id="image<?php echo $i; ?>" class="map" src="<?php echo $this->basePath() ."/img/ECERF".$i."_DataPort.png"; ?>" height=1000 width=971 />
+        <?php break; 
+      default: ?>
+        <img id="image<?php echo $i; ?>" class="map" src="<?php echo $this->basePath() ."/img/ECERF".$i."_DataPort.png"; ?>" height=1000 width=637 />
+        <?php break;
+     } ?>
+  <?php } ?> 
+</div>
