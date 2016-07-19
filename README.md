@@ -32,7 +32,7 @@ To use Apache, setup a virtual host to point to the public/ directory of the pro
 
 MySQL Database
 ------------
-This web app is using MySQL, via PHP’s PDO driver, so run SQL script “dataport_phpMyAdmin” (the file is located at \ port_map_php\module\Dataport\data) to import “dataport” database. 
+This web app is using MySQL, via PHP’s PDO driver, so run SQL script “dataport_all.sql” (the file is located at \ port_map_php\module\Dataport\data) to import “dataport” database. 
 
 Then modify the username and password of MySQL in file “local.php “(the file is located at \port_map_php\config\autoload  ) to access the database. It should look something like below:
 ```
@@ -69,3 +69,5 @@ If you plan to add or delete a lot of edges at the same time, we strongly sugges
 
 Selecting floor and then selecting Start Node and End Node are all you need to do to add or delete an edge. 
 
+- Add new DataPort
+This subpage could help you add a new data port into database. Node corresponding to this data port will be create automatically using “floor_portnumber” as its name. 
